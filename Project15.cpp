@@ -18,19 +18,160 @@ public:Complex() {
       void disply() {
           cout << "real=" << this->real << ";image=" << this->image << endl;
       }
-      friend Complex operator +(Complex A, Complex B) {
+      /*friend Complex operator +(Complex A, Complex B) {
           return Complex(A.real + B.real, A.image + B.image);
       }
       friend Complex operator ++(Complex& A) {
           return Complex(++A.real,A.image);
       }
       friend Complex operator ++(Complex& A ,int) {
-          return Complex(++A.real, A.image);
+          return Complex(A.real++, A.image);
+      }*/
+
+      Complex operator+(Complex B)
+      {
+          return Complex(this->real + B.real, this->image + B.image);
+      }
+
+      Complex operator++()
+      {
+          return Complex(++this->real, this->image);
+      }
+
+      Complex operator++(int)
+      {
+          return Complex(this->real++, this->image);
+      }
+      Complex operator-(Complex B)
+      {
+          return Complex(this->real - B.real, this->image - B.image);
+      }
+
+      Complex operator--()
+      {
+          return Complex(--this->real, this->image);
+      }
+
+      Complex operator--(int)
+      {
+          return Complex(this->real--, this->image);
       }
 };
+
+class PComplex {
+private:
+    Complex* PC;
+public:
+    PComplex(Complex* PC = NULL) {
+        this->PC = PC;
+    }
+public:
+    Complex* operator->() {
+        if (PC != NULL) {
+            return PC;
+        }
+        static Complex NullComplex(0, 0);
+        return &NullComplex;
+    }
+};
+
+class Point {
+private:
+    int X, Y;
+public:
+    Point(int X = 0, int Y = 0) {
+        this->X = X;
+        this->Y = Y;
+    }
+    virtual double area() {
+        return 0.0;
+    }
+};
+
+class Circle :public Point {
+private:
+    int r;
+public:
+    Circle(int X ,int Y,int r = 0):Point(X,Y) {
+        this->r = r;
+    }
+    double area() {
+        return 3.14 * r * r;
+    }
+};
+
+class format {
+protected:
+    int x, y;
+public:
+    virtual double area() = 0;
+    virtual void show() = 0;
+};
+
+
+class point :public format {
+private:
+    int x, y;
+public:
+    point(int x = 0, int y = 0) {
+        this->x = x;
+        this->y = y;
+        cout << "point()被调用" << endl;
+    }
+    virtual double area() {
+        return 0.0;
+    }
+    void show() {
+        cout << x << '\t' << y << endl;
+    }
+    virtual ~point() {
+        cout << "~point()被调用" << endl;
+    }
+};
+
+
+class circle :public point {
+public:
+    int r;
+public:
+    circle(int x, int y, int r = 0) :point(x, y) {
+        this->r = r;
+        cout << "circle()被调用" << endl;
+    }
+    virtual double area() {
+        return 3.14 * r * r;
+    }
+    void show() {
+        cout << r << endl;
+    }
+    ~circle() {
+        cout << "~circle()被调用" << endl;
+    }
+};
+
+
+
+class cylinder :public circle {
+private:
+    double height;
+public:
+    cylinder(int x, int y, double r, double h) :circle(x, y, r) {
+        height = h;
+    }
+    double area()
+    {
+        return 2 * circle::area() + 2 * 3.14 * r * height;
+    }
+    void show() {
+        cout << height << endl;
+    }
+};
+
+
+
 int main(double sid1,double sid2,double sid3)
 {
-    Complex comp1;
+    /*Complex comp1;
     comp1.real=1.0;
     comp1.image = 1.0;
     comp1.disply();
@@ -40,8 +181,31 @@ int main(double sid1,double sid2,double sid3)
     Complex comp3 = comp1 + comp2;
     comp3.disply();
     Complex comp4 = comp3++;
-    
+    Complex comp5 = ++comp3;
     comp4.disply();
+    comp5.disply();*/
+
+
+
+    /*Complex comp1(1, 2);
+    PComplex pcoml;
+    pcoml->disply();
+    PComplex pcom2(&compl);
+    pcom2->disply();*/
+
+   /* Point P1(10, 10);
+    cout << "P1.area=" << P1.area() << endl;
+    Circle C1(10, 10, 20);
+    cout << "C1.area=" << C1.area() << endl;*/
+
+    cylinder c(100, 200, 10, 50);
+    format* p;
+    p = &c;
+    p->show();
+    cout << "s=" << p->area() << endl;
+    circle cir(5, 10, 100);
+    format& r = cir;
+    r.show();
     system("pause");
 }
 
